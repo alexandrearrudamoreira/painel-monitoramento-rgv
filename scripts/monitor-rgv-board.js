@@ -202,11 +202,13 @@ class RGVBoardMonitor {
 
   /**
    * Obtém status do kanban (NOVA LÓGICA)
+   * SEM filtro de data - sempre mostra todos os arquivos
    */
   async getBoard(date = null) {
     try {
       await this.garantirTokenValido();
-      const targetDate = date ? new Date(date) : new Date();
+      // Ignora date parameter - sempre mostra TODOS os arquivos
+      const targetDate = null;
 
       // ════════════════════════════════════════
       // PENDENTE + EM ANDAMENTO: [2-Processamento]
