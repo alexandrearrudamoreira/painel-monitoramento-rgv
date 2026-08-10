@@ -4,7 +4,8 @@
 
 class PainelRGV {
   constructor() {
-    this.currentDate = new Date();
+    // DEBUG: Carrega com 08/08/2026 para testar
+    this.currentDate = new Date('2026-08-08');
     this.init();
   }
 
