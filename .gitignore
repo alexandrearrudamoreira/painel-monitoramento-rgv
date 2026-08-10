@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+oauth-credentials.json
+.oauth-token.json
+logs/
+*.log
+.DS_Store
+*.pid
+.vscode/
+.idea/
+/dist/
+/build/
