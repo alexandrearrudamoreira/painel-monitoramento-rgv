@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>🎯 Painel RGV - Clube do Blindado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+/* ══════════════════════════════════════════════
+   RESET & TOKENS (Mission Control Style)
+══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sb:       240px;
+  --bg:       #06060f;
+  --bg-sb:    #09091a;
+  --bg-surf:  #0d0d1f;
+  --bg-card:  rgba(255,255,255,.038);
+  --bg-card2: rgba(255,255,255,.065);
+  --bd:       rgba(255,255,255,.08);
+  --bd2:      rgba(255,255,255,.15);
+  --acc:      #C41E3A;
+  --acc2:     #D4AF37;
+  --acc-g:    linear-gradient(135deg,#C41E3A,#8b0000);
+  --green:    #10b981;
+  --amber:    #f59e0b;
+  --red:      #ef4444;
+  --blue:     #3b82f6;
+  --t1:       #f1f5f9;
+  --t2:       #94a3b8;
+  --t3:       #475569;
+  --r:        14px;
+}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:14px;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 40% at 12% 18%, rgba(196,30,58,.1) 0%,transparent 60%),radial-gradient(ellipse 45% 35% at 88% 85%, rgba(212,175,55,.08) 0%,transparent 60%);animation:glow 14s ease-in-out infinite alternate}
+@keyframes glow{from{opacity:1;transform:scale(1)}to{opacity:.65;transform:scale(1.08) rotate(4deg)}}
+
+/* ═ APP SHELL ═ */
+#app{position:relative;z-index:1;display:grid;grid-template-columns:var(--sb) 1fr;height:100vh;overflow:hidden}
+
+/* ═ SIDEBAR ═ */
+.sb{grid-column:1;display:flex;flex-direction:column;background:var(--bg-sb);border-right:1px solid var(--bd);height:100vh;overflow-y:auto;overflow-x:hidden}
+.sb-logo{display:flex;align-items:center;gap:11px;padding:18px 16px 14px;border-bottom:1px solid var(--bd)}
+.logo-ico{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden}
+.logo-ico img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+.logo-txt{font-size:14px;font-weight:800;white-space:nowrap}
+.sb-section{padding:14px 10px 4px}
+.sb-sec-lbl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1px;padding:0 8px;margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;cursor:pointer;transition:all .17s;color:var(--t2);font-size:13px;font-weight:500;border:none;background:transparent;width:100%;text-align:left;font-family:inherit;text-decoration:none;position:relative;margin-bottom:2px}
+.nav-item:hover{background:rgba(255,255,255,.06);color:var(--t1)}
+.nav-item.on{background:linear-gradient(135deg,rgba(196,30,58,.22),rgba(212,175,55,.18));color:var(--t1);border:1px solid rgba(196,30,58,.28)}
+.nav-item.on .nav-ico{filter:drop-shadow(0 0 6px rgba(196,30,58,.8))}
+.nav-ico{font-size:17px;flex-shrink:0;width:22px;text-align:center}
+.nav-lbl{flex:1;white-space:nowrap}
+.sb-footer{margin-top:auto;padding:14px 10px;border-top:1px solid var(--bd)}
+.bob-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--bg-card);border:1px solid var(--bd)}
+.bob-av{width:32px;height:32px;border-radius:50%;background:var(--acc-g);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.bob-name{font-size:13px;font-weight:700}
+.bob-status{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)}
+.bob-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse-g 2.5s infinite}
+@keyframes pulse-g{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}}
+
+/* ═ CONTENT WRAPPER ═ */
+.cw{grid-column:2;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ─ TOPBAR ─ */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;flex-shrink:0;background:rgba(6,6,15,.8);border-bottom:1px solid var(--bd);backdrop-filter:blur(20px);gap:14px}
+.tb-left{display:flex;align-items:center;gap:14px}
+.page-title{font-size:16px;font-weight:800}
+.tb-right{display:flex;align-items:center;gap:14px}
+.date-chip{display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--bg-card);border:1px solid var(--bd);border-radius:10px}
+.date-chip input{background:transparent;border:none;color:var(--t1);font-size:13px;outline:none;cursor:pointer;font-family:inherit}
+.date-chip button{background:transparent;border:none;color:var(--t2);cursor:pointer;padding:0;font-size:12px;transition:color .17s}
+.date-chip button:hover{color:var(--t1)}
+.clock{text-align:right}
+.ck-t{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.3px;background:linear-gradient(135deg,#f1f5f9,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ═ PAGES ═ */
+.pages{flex:1;display:flex;overflow:hidden}
+.page{flex:1;display:none;overflow-y:auto;padding:20px 24px}
+.page.on{display:flex;flex-direction:column}
+
+/* ─ DASHBOARD PAGE ─ */
+.page.dashboard{flex-direction:column}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:16px;margin-bottom:20px}
+.metric-card{display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);transition:all .2s}
+.metric-card:hover{border-color:var(--acc);background:var(--bg-card2)}
+.metric-ico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.metric-ico.entrada{background:rgba(99,102,241,.15);color:#6366f1}
+.metric-ico.processamento{background:rgba(245,158,11,.15);color:#f59e0b}
+.metric-ico.resultado{background:rgba(16,185,129,.15);color:#10b981}
+.metric-ico.taxa{background:rgba(139,92,246,.15);color:#8b5cf6}
+.metric-content{flex:1}
+.metric-label{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px}
+.metric-value{font-size:32px;font-weight:800;margin:6px 0}
+.metric-unit{font-size:11px;color:var(--t2)}
+
+/* ─ RGV BOARD PAGE ─ */
+.page.board{flex-direction:column}
+.board-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:16px;flex:1;overflow-y:auto}
+.board-col{display:flex;flex-direction:column;background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.col-header{display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid var(--bd);background:rgba(0,0,0,.2);flex-shrink:0}
+.col-title{font-size:14px;font-weight:700}
+.col-count{display:flex;align-items:center;justify-content:center;min-width:24px;height:24px;background:var(--acc);color:#fff;border-radius:50%;font-size:12px;font-weight:700}
+.col-content{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.card-empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--t3);font-size:12px;text-align:center}
+
+/* ─ RGV CARD ─ */
+.rgv-card{display:flex;flex-direction:column;padding:12px;background:rgba(0,0,0,.3);border:1px solid var(--bd);border-radius:10px;cursor:pointer;transition:all .17s}
+.rgv-card:hover{border-color:var(--acc);background:rgba(196,30,58,.1);box-shadow:0 0 12px rgba(196,30,58,.2)}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.card-placa{font-size:15px;font-weight:800;color:var(--acc);font-family:'Courier New',monospace;letter-spacing:1px}
+.card-badge{display:inline-block;padding:3px 7px;background:rgba(16,185,129,.2);color:#10b981;border-radius:4px;font-size:10px;font-weight:700}
+.card-date{font-size:11px;color:var(--t2);margin-bottom:8px}
+.card-actions{display:flex;gap:6px;padding-top:8px;border-top:1px solid var(--bd)}
+.card-btn{flex:1;padding:5px 8px;background:transparent;border:1px solid var(--bd);border-radius:6px;color:var(--t2);font-size:11px;cursor:pointer;transition:all .17s}
+.card-btn:hover{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* ═ RESPONSIVE ═ */
+@media (max-width: 1024px) {
+  .board-grid{grid-template-columns:repeat(2, 1fr)}
+}
+@media (max-width: 768px) {
+  #app{grid-template-columns:1fr}
+  .sb{display:none}
+  .page{padding:12px}
+  .metrics-grid{grid-template-columns:repeat(2, 1fr);gap:12px}
+  .board-grid{grid-template-columns:1fr}
+}
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- SIDEBAR -->
+  <div class="sb">
+    <div class="sb-logo">
+      <div class="logo-ico">
+        <img src="logo-clube.png" alt="Clube do Blindado" />
+      </div>
+      <div class="logo-txt">RGV Monitor</div>
+    </div>
+    
+    <div class="sb-section">
+      <div class="sb-sec-lbl">Menu</div>
+      <button class="nav-item on" data-page="dashboard">
+        <i class="nav-ico fas fa-chart-line"></i>
+        <span class="nav-lbl">Dashboard</span>
+      </button>
+      <button class="nav-item" data-page="board">
+        <i class="nav-ico fas fa-kanban"></i>
+        <span class="nav-lbl">RGV Board</span>
+      </button>
+    </div>
+    
+    <div class="sb-footer">
+      <div class="bob-card">
+        <div class="bob-av">😎</div>
+        <div>
+          <div class="bob-name">Bob</div>
+          <div class="bob-status"><div class="bob-dot"></div> Online</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="cw">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="tb-left">
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="tb-right">
+        <div class="date-chip">
+          <input type="date" id="datePicker" style="cursor: pointer;" />
+          <button id="todayBtn" title="Hoje" style="cursor: pointer;">📅</button>
+        </div>
+        <div class="clock">
+          <div class="ck-t" id="clock">17:38:54</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGES -->
+    <div class="pages">
+      <!-- Dashboard Page -->
+      <div class="page dashboard on">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-ico entrada"><i class="fas fa-inbox"></i></div>
+            <div class="metric-content">
+              <div class="metric-label">Entrada</div>
+              <div class="metric-value" id="entrada">0</div>
+              <div class="metric-unit">placas aguardando</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-ico processamento"><i class="fas fa-cogs"></i></div>
+            <div class="metric-content">
+              <div class="metric-label">Processamento</div>
+              <div class="metric-value" id="processamento">0</div>
+              <div class="metric-unit">em processamento</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-ico resultado"><i class="fas fa-check-circle"></i></div>
+            <div class="metric-content">
+              <div class="metric-label">Resultado</div>
+              <div class="metric-value" id="resultado">0</div>
+              <div class="metric-unit">concluídos</div>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-ico taxa"><i class="fas fa-percent"></i></div>
+            <div class="metric-content">
+              <div class="metric-label">Taxa</div>
+              <div class="metric-value" id="taxa">0%</div>
+              <div class="metric-unit">conclusão</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RGV Board Page -->
+      <div class="page board">
+        <div class="board-grid">
+          <!-- Pendente -->
+          <div class="board-col">
+            <div class="col-header">
+              <div class="col-title">Pendente</div>
+              <div class="col-count" id="count-pendente">0</div>
+            </div>
+            <div class="col-content" id="col-pendente">
+              <div class="card-empty">Nenhuma placa</div>
+            </div>
+          </div>
+
+          <!-- Em Andamento -->
+          <div class="board-col">
+            <div class="col-header">
+              <div class="col-title">Em Andamento</div>
+              <div class="col-count" id="count-andamento">0</div>
+            </div>
+            <div class="col-content" id="col-andamento">
+              <div class="card-empty">Nenhuma placa</div>
+            </div>
+          </div>
+
+          <!-- Concluído -->
+          <div class="board-col">
+            <div class="col-header">
+              <div class="col-title">Concluído</div>
+              <div class="col-count" id="count-concluido">0</div>
+            </div>
+            <div class="col-content" id="col-concluido">
+              <div class="card-empty">Nenhuma placa</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

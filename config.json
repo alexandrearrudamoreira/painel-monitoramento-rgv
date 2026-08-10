@@ -1,0 +1,17 @@
+{
+  "port": 3001,
+  "oauth": {
+    "client_id": "650207676770-j9gmsja0tgn664d42c3e75jipqh24ebu.apps.googleusercontent.com",
+    "client_secret": "USE_ENVIRONMENT_VARIABLE_IN_VERCEL",
+    "redirect_uri": "http://localhost:3001/auth/callback",
+    "token_path": "/tmp/painel-oauth-token.json"
+  },
+  "googleDrive": {
+    "folderPendente": "1QACDuCzkYojEcSdWNEGEVo-WRiXobbpb",
+    "folderProcessamento": "1KcR1VDwRTd9wVJF2H6Pio7heuk1aBQwU",
+    "folderConcluido": "1QACDuCzkYojEcSdWNEGEVo-WRiXobbpb"
+  },
+  "updateInterval": 30000,
+  "cacheDir": "./logs",
+  "logFile": "./logs/painel.log"
+}
