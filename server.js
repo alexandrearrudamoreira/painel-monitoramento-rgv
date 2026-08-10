@@ -164,6 +164,102 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+/**
+ * GET /auth
+ * Inicia autenticação OAuth com Google
+ */
+app.get('/auth', (req, res) => {
+  try {
+    let credentials;
+    
+    if (process.env.OAUTH_CREDENTIALS_JSON) {
+      credentials = JSON.parse(process.env.OAUTH_CREDENTIALS_JSON).installed;
+    } else {
+      const oauthFile = path.join(__dirname, 'oauth-credentials.json');
+      if (!fs.existsSync(oauthFile)) {
+        throw new Error('oauth-credentials.json não encontrado');
+      }
+      credentials = JSON.parse(fs.readFileSync(oauthFile, 'utf8')).installed;
+    }
+    
+    oauth2Client = new google.auth.OAuth2(
+      credentials.client_id,
+      credentials.client_secret,
+      credentials.redirect_uris[0]
+    );
+    
+    const authUrl = oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: ['https://www.googleapis.com/auth/drive'],
+      prompt: 'consent'
+    });
+    
+    console.log('🔐 Redirecionando para autenticação Google...');
+    res.redirect(authUrl);
+  } catch (err) {
+    console.error('❌ Erro ao iniciar autenticação:', err.message);
+    res.status(500).send('Erro ao iniciar autenticação: ' + err.message);
+  }
+});
+
+/**
+ * GET /auth/callback
+ * Callback da autenticação OAuth
+ */
+app.get('/auth/callback', async (req, res) => {
+  try {
+    const code = req.query.code;
+    if (!code) throw new Error('Código de autorização não recebido');
+    
+    if (!oauth2Client) {
+      throw new Error('OAuth2Client não inicializado');
+    }
+    
+    const { tokens } = await oauth2Client.getToken(code);
+    globalTokens = tokens;
+    oauth2Client.setCredentials(tokens);
+    
+    // Salva em arquivo
+    try {
+      fs.writeFileSync(TOKEN_FILE_PATH, JSON.stringify(tokens), 'utf8');
+      console.log('💾 Token OAuth salvo');
+    } catch (err) {
+      console.warn('⚠️ Erro ao salvar token:', err.message);
+    }
+    
+    // Redefine drive
+    drive = google.drive({ version: 'v3', auth: oauth2Client });
+    
+    console.log('✅ Autenticação bem-sucedida!');
+    res.send(`
+      ✅ Autenticação bem-sucedida!<br>
+      Token salvo em memória e arquivo.<br>
+      <a href="/">Voltar para o painel</a>
+    `);
+  } catch (err) {
+    console.error('❌ Erro no callback:', err.message);
+    res.status(500).send('Erro na autenticação: ' + err.message);
+  }
+});
+
+/**
+ * GET /logout
+ * Deletar token
+ */
+app.get('/logout', (req, res) => {
+  try {
+    if (fs.existsSync(TOKEN_FILE_PATH)) {
+      fs.unlinkSync(TOKEN_FILE_PATH);
+      console.log('🔓 Token deletado');
+    }
+    globalTokens = null;
+    res.send('✅ Logout realizado! <a href="/">Voltar</a>');
+  } catch (err) {
+    console.error('❌ Erro ao fazer logout:', err.message);
+    res.status(500).send('Erro ao fazer logout: ' + err.message);
+  }
+});
+
 // Inicia servidor
 app.listen(PORT, () => {
   console.log(`🚀 Painel de Monitoramento rodando em http://localhost:${PORT}`);
