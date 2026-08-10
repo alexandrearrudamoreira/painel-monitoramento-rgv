@@ -12,7 +12,16 @@ const path = require('path');
 const { google } = require('googleapis');
 
 const CONFIG = require('../config.json');
-const TOKEN_FILE_PATH = path.join('/tmp', 'oauth-token.json'); // Compartilhado
+// Volume persistente Railway: /app/data
+// Fallback: /tmp para desenvolvimento local
+const DATA_DIR = process.env.NODE_ENV === 'production' ? '/app/data' : '/tmp';
+const TOKEN_FILE_PATH = path.join(DATA_DIR, 'oauth-token.json');
+
+// Garante que a pasta existe
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  console.log(`📁 Pasta criada: ${DATA_DIR}`);
+}
 
 let oauth2Client = null;
 let drive = null;
